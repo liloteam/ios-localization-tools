@@ -20,6 +20,9 @@ struct LocalizationTools: ParsableCommand {
 
     @Flag(name: .customLong("import"), help: "To determine if we should run the import task.")
     var runImportTask = false
+    
+    //Lilo: defines the supported languages which have to be imported
+    var supportedLocales = ["en-US", "fr"]
 
     static var configuration: CommandConfiguration {
         CommandConfiguration(commandName: "l10nTools", abstract: "Scripts for automating l10n for Mozilla iOS projects.", discussion: "", version: "1.0", shouldDisplay: true, subcommands: [], defaultSubcommand: nil, helpNames: .long)
@@ -53,6 +56,10 @@ struct LocalizationTools: ParsableCommand {
                 locales.append(f.pathComponents.last!)
             }
             locales = locales.filter{ $0 != "templates" }
+            
+            //Lilo: keep only the supported locales
+            locales = locales.filter { supportedLocales.contains($0) }
+            
             locales.sort()
         }
 
