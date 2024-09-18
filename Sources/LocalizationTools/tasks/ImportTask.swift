@@ -121,6 +121,19 @@ struct ImportTask {
                         translation.insertChild(element, at: 1)
                     }
                 }
+                
+                //Lilo: replace the app name Firefox by Lilo whatever the case of the original word
+                if let nodes = try? translation.nodes(forXPath: "target") {
+                    let fileName = fileNode.attribute(forName: "original")?.stringValue
+                    for node in nodes {
+                        if let value = node.stringValue, let _ = value.range(of: "firefox", options: .caseInsensitive) {
+                            let newValue = value.replacingOccurrencesAllCasses(of: "firefox", with: "lilo")
+                            node.setStringValue(newValue, resolvingEntities: false)
+                            print("DBG:Loc: app name replaced from: \(value) -- to: \(newValue) -- in the file: \(fileName ?? "No file name")")
+                        }
+                    }
+                }
+
             }
             translations = try! fileNode.nodes(forXPath: "body/trans-unit")
             if translations.isEmpty {
